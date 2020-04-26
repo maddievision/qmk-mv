@@ -34,11 +34,31 @@
 #define NO_PIPE_ALT KC_GRAVE
 #define NO_BSLS_ALT KC_EQUAL
 
+enum unicode_names {
+    UEM_SPARKLE,
+    UEM_SHRUG,
+    UEM_S2,
+};
+
+const uint32_t PROGMEM unicode_map[] = {
+    [UEM_SPARKLE]  = 0x2728,  // ‽
+    [UEM_SHRUG] = 0x1F937,  // ⸮
+    [UEM_S2]  = 0x1F3FB, // 🐍
+};
+
 enum planck_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
-  ST_MACRO_0,
-  ST_MACRO_1,
-  ST_MACRO_2,
+  ST_EMOJ,
+  ST_SHOT,
+  ST_TPST,
+  ST_GO,
+  ST_ESPK,
+  ST_ESHG,
+  ST_MV,
+  ST_MADI,
+  ST_GMAI,
+  ST_HEX,
+  ST_ROCK
 };
 
 enum planck_layers {
@@ -50,36 +70,118 @@ enum planck_layers {
   _TRACKER5,
   _TRACKER6,
   _MACRO7,
-  _MIDI8
+  _MIDI8,
+  _MIDI9,
 };
 
-#define LOWER MO(_LOWER1)
-#define RAISE MO(_RAISE2)
+#define BASE    TO(_BASE0)
+#define LOWER   MO(_LOWER1)
+#define RAISE   MO(_RAISE2)
+#define ADJUST  MO(_ADJUST3)
+#define HELPER  MO(_HELPER4)
+#define TRACKER TO(_TRACKER5)
+#define TRACKR2 MO(_TRACKER6)
+#define MACREC  MO(_MACRO7)
+#define MIDI    TO(_MIDI8)
+#define MIDI2   TO(_MIDI9)
+
+#define RSH_ENT RSFT_T(KC_ENT)
+
+#define HEX_A   LSFT(KC_A)
+#define HEX_B   LSFT(KC_B)
+#define HEX_C   LSFT(KC_C)
+#define HEX_D   LSFT(KC_D)
+#define HEX_E   LSFT(KC_E)
+#define HEX_F   LSFT(KC_F)
+
+#define ORYXKEY WEBUSB_PAIR
+
+#define DMPLAY1 DYN_MACRO_PLAY1
+#define DMPLAY2 DYN_MACRO_PLAY2
+#define DMREC1  DYN_REC_START1
+#define DMREC2  DYN_REC_START2
+#define DMRSTOP DYN_REC_STOP
+
+#define TR_ROWU LGUI(LSFT(KC_UP))
+#define TR_ROWD LGUI(LSFT(KC_DOWN))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE0] = LAYOUT_planck_grid(KC_ESCAPE, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_BSPACE, KC_TAB, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCOLON, KC_QUOTE, KC_LSHIFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMMA, KC_DOT, KC_SLASH, KC_ENTER, MO(4), KC_LCTRL, KC_LALT, LOWER, KC_LGUI, KC_SPACE, KC_NO, RAISE, KC_LEFT, KC_UP, KC_DOWN, KC_RIGHT),
+    [_BASE0] = LAYOUT_planck_grid(
+      KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+      KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,   KC_G,     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSH_ENT,
+      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
+    ),
 
-    [_LOWER1] = LAYOUT_planck_grid(KC_TILD, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_TRANSPARENT, KC_TRANSPARENT, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_MEDIA_PLAY_PAUSE, KC_TRANSPARENT, KC_TRANSPARENT, KC_UNDS, KC_PLUS, KC_TRANSPARENT, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_AUDIO_MUTE, KC_LCBR, KC_RCBR, KC_PIPE, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_MEDIA_PREV_TRACK, KC_AUDIO_VOL_DOWN, KC_AUDIO_VOL_UP, KC_MEDIA_NEXT_TRACK),
+    [_LOWER1] = LAYOUT_planck_grid(
+      KC_TILD, KC_P1,   KC_P2,   KC_P3,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LPRN, KC_RPRN, KC_UNDS, KC_DEL, 
+      KC_NO,   KC_P4,   KC_P5,   KC_P6,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_PEQL, KC_PPLS, 
+      RAISE,   KC_P7,   KC_P8,   KC_P9,   KC_P0,   KC_F11,  KC_NO,   KC_NO,   KC_LCBR, KC_RCBR, KC_ASTR, KC_PMNS, 
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   ADJUST,  KC_GRV,  ST_ROCK, KC_PIPE, KC_BSLS
+    ),
 
-    [_RAISE2] = LAYOUT_planck_grid(KC_GRAVE, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_DELETE, KC_CAPSLOCK, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_MEDIA_PLAY_PAUSE, KC_TRANSPARENT, KC_TRANSPARENT, KC_MINUS, KC_EQUAL, KC_TRANSPARENT, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_AUDIO_MUTE, KC_LBRACKET, KC_RBRACKET, KC_BSLASH, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_MEDIA_REWIND, KC_AUDIO_VOL_UP, KC_AUDIO_VOL_DOWN, KC_MEDIA_FAST_FORWARD),
+    [_RAISE2] = LAYOUT_planck_grid(
+      KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_NO,   HEX_E,   HEX_F,   KC_P7,   KC_P8,   KC_P9,   KC_PSLS, KC_DEL,
+      KC_NO,   KC_DLR,  KC_PERC, KC_CIRC, KC_NO,   HEX_C,   HEX_D,   KC_P4,   KC_P5,   KC_P6,   KC_PPLS, KC_NO, 
+      KC_TRNS, KC_AMPR, KC_ASTR, ST_HEX,  KC_NO,   HEX_A,   HEX_B,   KC_P1,   KC_P2,   KC_P3,   KC_PPLS, KC_PENT,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   KC_TRNS, KC_P0,   KC_PDOT, KC_ASTR, KC_PENT
+    ),
 
-    [_ADJUST3] = LAYOUT_planck_grid(KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_DELETE, KC_TRANSPARENT, AU_ON, AU_OFF, AU_TOG, KC_TRANSPARENT, KC_TRANSPARENT, RGB_TOG, RGB_VAI, RGB_VAD, KC_TRANSPARENT, RESET, KC_TRANSPARENT, KC_TRANSPARENT, MU_ON, MU_OFF, MU_TOG, KC_TRANSPARENT, KC_TRANSPARENT, RGB_MOD, RGB_HUI, RGB_HUD, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT),
+    [_ADJUST3] = LAYOUT_planck_grid(
+      KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_TRNS,
+      KC_NO,   KC_TRNS, AU_ON,   AU_OFF,  AU_TOG,  KC_TRNS, KC_TRNS, RGB_TOG, RGB_VAI, RGB_VAD, KC_TRNS, RESET,
+      KC_TRNS, KC_TRNS, MU_ON,   MU_OFF,  MU_TOG,  KC_TRNS, KC_TRNS, RGB_MOD, RGB_HUI, RGB_HUD, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 
-    [_HELPER4] = LAYOUT_planck_grid(ST_MACRO_0, TO(8), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TO(5), KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_WH_DOWN, WEBUSB_PAIR, DYN_REC_STOP, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_WH_LEFT, KC_MS_WH_UP, KC_MS_WH_RIGHT, DYN_MACRO_PLAY1, DYN_MACRO_PLAY2, MO(7), ST_MACRO_1, KC_TRANSPARENT, KC_TRANSPARENT, ST_MACRO_2, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_BTN1, KC_MS_BTN3, KC_MS_BTN2, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_MS_LEFT, KC_MS_UP, KC_MS_DOWN, KC_MS_RIGHT),
+    [_HELPER4] = LAYOUT_planck_grid(
+      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMRSTOP, KC_NO,
+      MACREC,  ST_ESPK, ST_ESHG, KC_NO,   DMRSTOP, ST_GO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMPLAY1, DMPLAY2,
+      KC_CAPS, KC_NO,   KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_MPLY, KC_NO,   KC_NO,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, ST_SHOT
+    ),
 
-    [_TRACKER5] = LAYOUT_planck_grid(TO(0), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, MO(6), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT),
+    [_TRACKER5] = LAYOUT_planck_grid(
+      BASE,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      TRACKR2, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 
-    [_TRACKER6] = LAYOUT_planck_grid(KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_TRANSPARENT, KC_TRANSPARENT, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_TRANSPARENT, LGUI(LSFT(KC_UP)), LGUI(LSFT(KC_DOWN)), KC_TRANSPARENT),
+    [_TRACKER6] = LAYOUT_planck_grid(
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_TRNS,
+      KC_TRNS, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, TR_ROWU, TR_ROWD, KC_TRNS
+    ),
 
-    [_MACRO7] = LAYOUT_planck_grid(KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, DYN_REC_START1, DYN_REC_START2, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT),
+    [_MACRO7] = LAYOUT_planck_grid(
+      KC_TRNS, KC_TRNS, KC_TRNS, DMREC1,  DMREC2,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, DMREC1,  DMREC2,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 
     [_MIDI8] = LAYOUT_planck_grid(
-      TO(0), KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_BSPACE,
-      KC_TAB, KC_A, MI_Cs, MI_Ds, KC_F, MI_Fs, MI_Gs, MI_As, KC_K, MI_Cs_1, MI_Ds_1, KC_QUOTE,
-      KC_LSHIFT, MI_C, MI_D, MI_E, MI_F, MI_G, MI_A, MI_B, MI_C_1, MI_D_1, KC_SLASH, KC_ENTER,
-      KC_TRANSPARENT, KC_LCTRL, KC_LALT, KC_TRANSPARENT, KC_LGUI, KC_SPACE, KC_NO, KC_TRANSPARENT, KC_LEFT, KC_UP, KC_DOWN, KC_RIGHT),
+      BASE,    MI_OCTD, MI_OCTU, MI_TRNSD,MI_TRNSU,KC_TRNS, MI_VEL_3,MI_VEL_5,MI_VEL_8,MI_VEL_9,MI_VEL_10,KC_TRNS,
+      KC_TRNS, KC_TRNS, MI_Cs,   MI_Ds,   KC_TRNS, MI_Fs,   MI_Gs,   MI_As,   KC_TRNS, MI_Cs_1, MI_Ds_1, KC_TRNS,
+      MIDI2,   MI_C,    MI_D,    MI_E,    MI_F,    MI_G,    MI_A,    MI_B,    MI_C_1,  MI_D_1,  KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 
+    [_MIDI9] = LAYOUT_planck_grid(
+      KC_TRNS, MI_OCTD, MI_OCTU, KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_3,MI_VEL_5,MI_VEL_8,MI_VEL_9,MI_VEL_10,KC_TRNS,
+      KC_TRNS, KC_TRNS, MI_Cs_1, MI_Ds_1, KC_TRNS, MI_Fs_1, MI_Gs_1, MI_As_1, KC_TRNS, MI_Cs_2, MI_Ds_2, KC_TRNS,
+      KC_TRNS, MI_C_1,  MI_D_1,  MI_E_1,  MI_F_1,  MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 };
+/*
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+*/
 
 extern bool g_suspend_state;
 extern rgb_config_t rgb_matrix_config;
@@ -89,25 +191,59 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
-    [0] = {{224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}, {224, 104, 255}},
+    [_LOWER1] = {
+      { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {  0,  0,  0}, 
+      {  0,  0,  0}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, 
+      {  0,  0,  0}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {  0,  0,  0}, 
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {215,246,201}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}
+    },
 
-    [1] = {{252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {205, 135, 156}, {205, 135, 156}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {150, 12, 242}, {205, 135, 156}, {205, 135, 156}, {252, 119, 255}, {252, 119, 255}, {205, 135, 156}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {150, 12, 242}, {252, 119, 255}, {252, 119, 255}, {252, 119, 255}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {205, 135, 156}, {150, 12, 242}, {150, 12, 242}, {150, 12, 242}, {205, 135, 156}},
+    [_RAISE2] = {
+      {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
+      {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
+      {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, { 80,255,255}, {125,250,252}, {125,250,252}, {  0,  0,  0}
+    },
 
-    [2] = {{154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {252, 119, 255}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {150, 12, 242}, {97, 174, 114}, {97, 174, 114}, {154, 86, 255}, {154, 86, 255}, {97, 174, 114}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {150, 12, 242}, {154, 86, 255}, {154, 86, 255}, {154, 86, 255}, {97, 174, 114}, {97, 174, 114}, {97, 174, 114}, {97, 174, 114}, {97, 174, 114}, {97, 174, 114}, {97, 174, 114}, {154, 86, 255}, {150, 12, 242}, {150, 12, 242}, {150, 12, 242}, {195, 61, 255}},
+    [_ADJUST3] = {
+      {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {125,250,252},
+      {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},
+      {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},
+      {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},                {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}
+    },
 
-    [3] = {{21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {50, 153, 244}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {50, 153, 244}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}, {21, 232, 123}},
+    [_HELPER4] = {
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},                { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}
+    },
 
-    [4] = {{25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {87, 169, 255}, {25, 139, 141}, {252, 119, 255}, {25, 139, 141}, {25, 139, 141}, {87, 169, 255}, {252, 119, 255}, {0, 183, 238}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {87, 169, 255}, {87, 169, 255}, {87, 169, 255}, {0, 0, 255}, {0, 0, 255}, {25, 139, 141}, {252, 119, 255}, {25, 139, 141}, {25, 139, 141}, {252, 119, 255}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {87, 169, 255}, {87, 169, 255}, {25, 139, 141}, {25, 139, 141}, {252, 119, 255}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {25, 139, 141}, {87, 169, 255}, {87, 169, 255}, {87, 169, 255}, {87, 169, 255}},
+    [_TRACKER5] = {
+      { 27,126,255}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
+      { 27,126,255}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
+      {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
+      {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},                {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}
+    },
 
-    [5] = {{27, 126, 255}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {27, 126, 255}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}, {163, 239, 133}},
+    [_TRACKER6] = {
+      {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75},
+      {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {133,255, 75},
+      {133,255, 75}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {133,255, 75},
+      {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75},                {133,255, 75}, {133,255, 75}, {250,159,255}, {250,159,255}, {133,255, 75}
+    },
 
-    [6] = {{133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {133, 255, 75}, {133, 255, 75}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {250, 159, 255}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {133, 255, 75}, {250, 159, 255}, {250, 159, 255}, {133, 255, 75}},
-
-    [7] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {250, 159, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-
-    [8] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 255}, {0, 0, 255}, {250, 159, 255}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-
+    [_MACRO7] = {
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,255}, {  0,  0,255},
+      {250,159,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
+    }
 };
+
+void eeconfig_init_user(void) {
+    set_unicode_input_mode(UC_OSX);
+}
 
 void set_layer_color(int layer) {
   for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
@@ -129,35 +265,36 @@ void set_layer_color(int layer) {
 void rgb_matrix_indicators_user(void) {
   if (g_suspend_state || keyboard_config.disable_layer_led) { return; }
   switch (biton32(layer_state)) {
-    case 0:
-      set_layer_color(0);
+    case _LOWER1:
+      set_layer_color(_LOWER1);
       break;
-    case 1:
-      set_layer_color(1);
+    case _RAISE2:
+      set_layer_color(_RAISE2);
       break;
-    case 2:
-      set_layer_color(2);
+    case _ADJUST3:
+      set_layer_color(_ADJUST3);
       break;
-    case 3:
-      set_layer_color(3);
+    case _HELPER4:
+      set_layer_color(_HELPER4);
       break;
-    case 4:
-      set_layer_color(4);
+    case _TRACKER5:
+      set_layer_color(_TRACKER5);
       break;
-    case 5:
-      set_layer_color(5);
+    case _TRACKER6:
+      set_layer_color(_TRACKER6);
       break;
-    case 6:
-      set_layer_color(6);
+    case _MACRO7:
+      set_layer_color(_MACRO7);
       break;
-    case 7:
-      set_layer_color(7);
+    case _MIDI8:
+      set_layer_color(_MIDI8);
       break;
-    case 8:
-      set_layer_color(8);
+    case _MIDI9:
+      set_layer_color(_MIDI9);
       break;
    default:
-    if (rgb_matrix_get_flags() == LED_FLAG_NONE)
+    if (rgb_matrix_get_flags() == LED_FLAG_NONE
+    )
       rgb_matrix_set_color_all(0, 0, 0);
     break;
   }
@@ -165,22 +302,59 @@ void rgb_matrix_indicators_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case ST_MACRO_0:
+    case ST_EMOJ:
     if (record->event.pressed) {
       SEND_STRING(SS_LCTL(SS_LGUI(SS_TAP(X_SPACE))));
 
     }
     break;
-    case ST_MACRO_1:
+    case ST_SHOT:
     if (record->event.pressed) {
       SEND_STRING(SS_LGUI(SS_LSFT(SS_TAP(X_4))));
 
     }
     break;
-    case ST_MACRO_2:
+    case ST_TPST:
     if (record->event.pressed) {
       SEND_STRING(SS_LALT(SS_LGUI(SS_LSFT(SS_TAP(X_V)))));
 
+    }
+    break;
+    case ST_GO:
+    if (record->event.pressed) {
+      SEND_STRING(SS_TAP(X_G));
+      SEND_STRING(SS_TAP(X_O));
+      SEND_STRING(SS_TAP(X_SLASH));
+    }
+    break;
+    case ST_ESPK:
+    if (record->event.pressed) {
+      send_string("zsparkle");
+    }
+    break;
+    case ST_ESHG:
+    if (record->event.pressed) {
+      send_string("zshrug");
+    }
+    break;
+    case ST_MV:
+    if (record->event.pressed) {
+      send_string("maddievision");
+    }
+    break;
+    case ST_MADI:
+    if (record->event.pressed) {
+      send_string("maddie");
+    }
+    break;
+    case ST_HEX:
+    if (record->event.pressed) {
+      send_string("0x");
+    }
+    break;
+    case ST_ROCK:
+    if (record->event.pressed) {
+      send_string("=>");
     }
     break;
     case RGB_SLD:
@@ -262,6 +436,6 @@ bool music_mask_user(uint16_t keycode) {
 }
 #endif
 
-uint32_t layer_state_set_user(uint32_t state) {
-    return update_tri_layer_state(state, _LOWER1, _RAISE2, _ADJUST3);
-}
+// uint32_t layer_state_set_user(uint32_t state) {
+//     return update_tri_layer_state(state, _LOWER1, _RAISE2, _ADJUST3);
+// }
