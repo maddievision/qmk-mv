@@ -58,7 +58,8 @@ enum planck_keycodes {
   ST_MADI,
   ST_GMAI,
   ST_HEX,
-  ST_ROCK
+  ST_ROCK,
+  ENTBASE
 };
 
 enum planck_layers {
@@ -72,6 +73,7 @@ enum planck_layers {
   _MACRO7,
   _MIDI8,
   _MIDI9,
+  _SPC10,
 };
 
 #define BASE    TO(_BASE0)
@@ -84,6 +86,7 @@ enum planck_layers {
 #define MACREC  MO(_MACRO7)
 #define MIDI    TO(_MIDI8)
 #define MIDI2   TO(_MIDI9)
+#define SPECIAL TO(_SPC10)
 
 #define RSH_ENT RSFT_T(KC_ENT)
 
@@ -135,7 +138,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_HELPER4] = LAYOUT_planck_grid(
-      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMRSTOP, KC_NO,
+      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMRSTOP, SPECIAL,
       MACREC,  ST_ESPK, ST_ESHG, KC_NO,   DMRSTOP, ST_GO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMPLAY1, DMPLAY2,
       KC_CAPS, KC_NO,   KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_MPLY, KC_NO,   KC_NO,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, ST_SHOT
@@ -232,11 +235,17 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
       {133,255, 75}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {133,255, 75},
       {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75},                {133,255, 75}, {133,255, 75}, {250,159,255}, {250,159,255}, {133,255, 75}
     },
-
+    
     [_MACRO7] = {
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,255}, {  0,  0,255},
       {250,159,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
+      {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
+    },
+    [_SPC10] = {
+      {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
+      {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0},
+      {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
     }
 };
@@ -291,6 +300,9 @@ void rgb_matrix_indicators_user(void) {
       break;
     case _MIDI9:
       set_layer_color(_MIDI9);
+      break;
+    case _SPC10:
+      set_layer_color(_SPC10);
       break;
    default:
     if (rgb_matrix_get_flags() == LED_FLAG_NONE
@@ -355,6 +367,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case ST_ROCK:
     if (record->event.pressed) {
       send_string("=>");
+    }
+    break;
+    case ENTBASE:
+    if (record->event.pressed) {
+      SEND_STRING(SS_TAP(X_ENTER));
+      layer_move(_BASE0);
     }
     break;
     case RGB_SLD:
