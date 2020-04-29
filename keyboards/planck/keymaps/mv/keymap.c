@@ -105,29 +105,32 @@ enum planck_layers {
 #define DMREC2  DYN_REC_START2
 #define DMRSTOP DYN_REC_STOP
 
+#define SEL_ALL LGUI(KC_A)
 #define TR_ROWU LGUI(LSFT(KC_UP))
 #define TR_ROWD LGUI(LSFT(KC_DOWN))
+
+int mod_is_down = 0;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE0] = LAYOUT_planck_grid(
       KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
       KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,   KC_G,     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSH_ENT,
-      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
+      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
+      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, RSH_RGT
     ),
 
     [_LOWER1] = LAYOUT_planck_grid(
-      KC_TILD, KC_P1,   KC_P2,   KC_P3,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LPRN, KC_RPRN, KC_UNDS, KC_DEL, 
-      KC_NO,   KC_P4,   KC_P5,   KC_P6,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_PEQL, KC_PPLS, 
-      RAISE,   KC_P7,   KC_P8,   KC_P9,   KC_P0,   KC_F11,  KC_NO,   KC_NO,   KC_LCBR, KC_RCBR, KC_ASTR, KC_PMNS, 
+      KC_TILD, KC_1,    KC_2,    KC_3,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LPRN, KC_RPRN, KC_UNDS, KC_DEL, 
+      KC_NO,   KC_4,    KC_5,    KC_6,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_PEQL, KC_PPLS, 
+      RAISE,   KC_7,    KC_8,    KC_9,    KC_0,    KC_F11,   KC_NO,  KC_NO,   KC_LCBR, KC_RCBR, KC_ASTR, KC_PMNS, 
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   ADJUST,  KC_GRV,  ST_ROCK, KC_PIPE, KC_BSLS
     ),
 
     [_RAISE2] = LAYOUT_planck_grid(
-      KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_NO,   HEX_E,   HEX_F,   KC_P7,   KC_P8,   KC_P9,   KC_PSLS, KC_DEL,
-      KC_NO,   KC_DLR,  KC_PERC, KC_CIRC, KC_NO,   HEX_C,   HEX_D,   KC_P4,   KC_P5,   KC_P6,   KC_PPLS, KC_NO, 
-      KC_TRNS, KC_AMPR, KC_ASTR, ST_HEX,  KC_NO,   HEX_A,   HEX_B,   KC_P1,   KC_P2,   KC_P3,   KC_PPLS, KC_PENT,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   KC_TRNS, KC_P0,   KC_PDOT, KC_ASTR, KC_PENT
+      KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_NO,   HEX_E,   HEX_F,   KC_7,    KC_8,    KC_9,    KC_PSLS, KC_DEL,
+      KC_NO,   KC_DLR,  KC_PERC, KC_CIRC, KC_NO,   HEX_C,   HEX_D,   KC_4,    KC_5,    KC_6,    KC_PPLS, KC_NO, 
+      KC_TRNS, KC_AMPR, KC_ASTR, ST_HEX,  KC_NO,   HEX_A,   HEX_B,   KC_1,    KC_2,    KC_3,    KC_PPLS, KC_PENT,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   KC_TRNS, KC_0,    KC_PDOT, KC_ASTR, KC_PENT
     ),
 
     [_ADJUST3] = LAYOUT_planck_grid(
@@ -178,12 +181,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_TRNS, MI_C_1,  MI_D_1,  MI_E_1,  MI_F_1,  MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
     ),
+
+    [_SPC10]  = LAYOUT_planck_grid(
+      BASE,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PMNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TILD,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ENTBASE, 
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   SEL_ALL, KC_BSPC, KC_TILD, KC_QUES, KC_EXLM
+    ),
 };
 /*
+    [_LAYERx]  = LAYOUT_planck_grid(
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    ),
 */
 
 extern bool g_suspend_state;
