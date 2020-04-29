@@ -88,7 +88,7 @@ enum planck_layers {
 #define MIDI2   TO(_MIDI9)
 #define SPECIAL TO(_SPC10)
 
-#define RSH_ENT RSFT_T(KC_ENT)
+#define RSH_RGT RSFT_T(KC_RGHT)
 
 #define HEX_A   LSFT(KC_A)
 #define HEX_B   LSFT(KC_B)
@@ -283,8 +283,47 @@ void set_layer_color(int layer) {
   }
 }
 
+void rgb_matrix_set_hsv_color_all(int h, int s, int v) {
+    HSV hsv = {
+      .h = h,
+      .s = s,
+      .v = v,
+    };
+    RGB rgb = hsv_to_rgb( hsv );
+    float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
+    rgb_matrix_set_color_all( f * rgb.r, f * rgb.g, f * rgb.b );
+}
+
+enum mod_is_down_bits {
+  MOD_DOWN_CMD = 1,
+  MOD_DOWN_ALT = 2,
+  MOD_DOWN_CTRL = 4,
+  MOD_DOWN_LSHIFT = 8,
+  MOD_DOWN_RSHIFT = 16,
+};
+
 void rgb_matrix_indicators_user(void) {
   if (g_suspend_state || keyboard_config.disable_layer_led) { return; }
+  if (mod_is_down) {
+    switch (mod_is_down) {
+      case MOD_DOWN_CMD:
+      rgb_matrix_set_hsv_color_all(0, 255, 255);
+      break;
+      case MOD_DOWN_LSHIFT:
+      case MOD_DOWN_RSHIFT:
+      rgb_matrix_set_hsv_color_all(32, 255, 255);
+      break;
+      case MOD_DOWN_ALT:
+      rgb_matrix_set_hsv_color_all(128, 255, 255);
+      break;
+      case MOD_DOWN_CTRL:
+      rgb_matrix_set_hsv_color_all(64, 255, 255);
+      break;
+      default: // more than one down
+      rgb_matrix_set_hsv_color_all(192, 255, 255);
+    }
+    return;
+  }
   switch (biton32(layer_state)) {
     case _LOWER1:
       set_layer_color(_LOWER1);
@@ -326,6 +365,41 @@ void rgb_matrix_indicators_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    case KC_LGUI:
+    if (record->event.pressed) {
+      mod_is_down |= MOD_DOWN_CMD;
+    } else {
+      mod_is_down &= ~MOD_DOWN_CMD;
+    }
+    break;
+    case KC_LSHIFT:
+    if (record->event.pressed) {
+      mod_is_down |= MOD_DOWN_LSHIFT;
+    } else {
+      mod_is_down &= ~MOD_DOWN_LSHIFT;
+    }
+    break;
+    case RSH_RGT:
+    if (record->event.pressed) {
+      mod_is_down |= MOD_DOWN_RSHIFT;
+    } else {
+      mod_is_down &= ~MOD_DOWN_RSHIFT;
+    }
+    break;
+    case KC_LALT:
+    if (record->event.pressed) {
+      mod_is_down |= MOD_DOWN_ALT;
+    } else {
+      mod_is_down &= ~MOD_DOWN_ALT;
+    }
+    break;
+    case KC_LCTRL:
+    if (record->event.pressed) {
+      mod_is_down |= MOD_DOWN_CTRL;
+    } else {
+      mod_is_down &= ~MOD_DOWN_CTRL;
+    }
+    break;
     case ST_EMOJ:
     if (record->event.pressed) {
       SEND_STRING(SS_LCTL(SS_LGUI(SS_TAP(X_SPACE))));
