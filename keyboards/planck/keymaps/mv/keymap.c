@@ -76,6 +76,11 @@ enum planck_layers {
   _SPC10,
 };
 
+
+enum light_layers {
+  _L_MOD_CMD = 20,
+};
+
 #define BASE    TO(_BASE0)
 #define LOWER   MO(_LOWER1)
 #define RAISE   MO(_RAISE2)
@@ -115,8 +120,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE0] = LAYOUT_planck_grid(
       KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
       KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,   KC_G,     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
-      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, RSH_RGT
+      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_DOWN, KC_RGHT, KC_ENT
     ),
 
     [_LOWER1] = LAYOUT_planck_grid(
@@ -141,10 +146,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_HELPER4] = LAYOUT_planck_grid(
-      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMRSTOP, SPECIAL,
+      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, SPECIAL,
       MACREC,  ST_ESPK, ST_ESHG, KC_NO,   DMRSTOP, ST_GO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMPLAY1, DMPLAY2,
-      KC_CAPS, KC_NO,   KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_MPLY, KC_NO,   KC_NO,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, ST_SHOT
+      KC_CAPS, ST_SHOT, KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_UP,   KC_NO,   KC_RSFT,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_ENT
     ),
 
     [_TRACKER5] = LAYOUT_planck_grid(
@@ -228,10 +233,10 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     },
 
     [_HELPER4] = {
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, {128,255,255}, {160,255,255}, {160,255,255}, {160,255,255}, { 38,255,255},
       { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
-      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
-      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
-      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},                { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, {192,255,255}, { 38,255,255}, { 38,255,255},
+      { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},                { 38,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, { 38,255,255}
     },
 
     [_TRACKER5] = {
@@ -259,7 +264,16 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
       {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
-    }
+    },
+
+
+    
+    [_L_MOD_CMD] = {
+      {  0,255,255}, {160,255,255}, {160,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},
+      {  0,255,255}, { 32,255,255}, { 32,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},
+      {  0,255,255}, { 32,255,255}, {224,255,255}, {224,255,255}, {224,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},
+      {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},                {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}
+    },
 };
 
 void eeconfig_init_user(void) {
@@ -307,7 +321,7 @@ void rgb_matrix_indicators_user(void) {
   if (mod_is_down) {
     switch (mod_is_down) {
       case MOD_DOWN_CMD:
-      rgb_matrix_set_hsv_color_all(0, 255, 255);
+      set_layer_color(_L_MOD_CMD);
       break;
       case MOD_DOWN_LSHIFT:
       case MOD_DOWN_RSHIFT:
@@ -379,7 +393,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       mod_is_down &= ~MOD_DOWN_LSHIFT;
     }
     break;
-    case RSH_RGT:
+    case KC_RSHIFT:
     if (record->event.pressed) {
       mod_is_down |= MOD_DOWN_RSHIFT;
     } else {
