@@ -90,7 +90,7 @@ enum light_layers {
 #define TRACKR2 MO(_TRACKER6)
 #define MACREC  MO(_MACRO7)
 #define MIDI    TO(_MIDI8)
-#define MIDI2   TO(_MIDI9)
+#define MIDI2   MO(_MIDI9)
 #define SPECIAL TO(_SPC10)
 
 #define RSH_RGT RSFT_T(KC_RGHT)
@@ -174,17 +174,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_MIDI8] = LAYOUT_planck_grid(
-      BASE,    MI_OCTD, MI_OCTU, MI_TRNSD,MI_TRNSU,KC_TRNS, MI_VEL_3,MI_VEL_5,MI_VEL_8,MI_VEL_9,MI_VEL_10,KC_TRNS,
-      KC_TRNS, KC_TRNS, MI_Cs,   MI_Ds,   KC_TRNS, MI_Fs,   MI_Gs,   MI_As,   KC_TRNS, MI_Cs_1, MI_Ds_1, KC_TRNS,
-      MIDI2,   MI_C,    MI_D,    MI_E,    MI_F,    MI_G,    MI_A,    MI_B,    MI_C_1,  MI_D_1,  KC_TRNS, KC_TRNS,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+      BASE,    MI_G_3,  MI_A_3,  MI_B_3,  MI_C_4,  MI_D_4,  MI_E_4,  MI_F_4,  MI_G_4,  MI_A_4,  MI_B_4,  MI_OCTU,
+      KC_TRNS, MI_G_2,  MI_A_2,  MI_B_2,  MI_C_3,  MI_D_3,  MI_E_3,  MI_F_3,  MI_G_3,  MI_A_3,  MI_B_3,  MI_OCTD,
+      MIDI2,   MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  MI_E_2,  MI_F_2,  MI_G_2,  MI_A_2,  MI_B_2,  MIDI2,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_9,MI_SUS
     ),
 
     [_MIDI9] = LAYOUT_planck_grid(
-      KC_TRNS, MI_OCTD, MI_OCTU, KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_3,MI_VEL_5,MI_VEL_8,MI_VEL_9,MI_VEL_10,KC_TRNS,
-      KC_TRNS, KC_TRNS, MI_Cs_1, MI_Ds_1, KC_TRNS, MI_Fs_1, MI_Gs_1, MI_As_1, KC_TRNS, MI_Cs_2, MI_Ds_2, KC_TRNS,
-      KC_TRNS, MI_C_1,  MI_D_1,  MI_E_1,  MI_F_1,  MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  KC_TRNS, KC_TRNS,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+      KC_TRNS, MI_G_3,  MI_A_3,  MI_As_3, MI_C_4,  MI_D_4,  MI_Ds_4, MI_F_4,  MI_G_4,  MI_A_4,  MI_As_4, MI_OCTU,
+      KC_TRNS, MI_G_2,  MI_A_2,  MI_As_2, MI_C_3,  MI_D_3,  MI_Ds_3, MI_F_3,  MI_G_3,  MI_A_3,  MI_As_3, MI_OCTD,
+      KC_TRNS, MI_G_1,  MI_A_1,  MI_As_1, MI_C_2,  MI_D_2,  MI_Ds_2, MI_F_2,  MI_G_2,  MI_A_2,  MI_As_2, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_9,MI_SUS
     ),
 
     [_SPC10]  = LAYOUT_planck_grid(
@@ -259,6 +259,21 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
       {250,159,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
     },
+
+    [_MIDI8] = {
+      { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
+      { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
+      { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
+      { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255},                { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}
+    },
+
+    [_MIDI9] = {
+      {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
+      {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
+      {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
+      {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255},                {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}
+    },
+
     [_SPC10] = {
       {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0},
