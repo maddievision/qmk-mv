@@ -148,8 +148,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_HELPER4] = LAYOUT_planck_grid(
       ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, SPECIAL,
       MACREC,  ST_ESPK, ST_ESHG, KC_NO,   DMRSTOP, ST_GO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMPLAY1, DMPLAY2,
-      KC_CAPS, ST_SHOT, KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_UP,   KC_NO,   KC_RSFT,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_ENT
+      KC_TRNS, ST_SHOT, KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_UP,   KC_NO,   KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS
     ),
 
     [_TRACKER5] = LAYOUT_planck_grid(
@@ -267,7 +267,7 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     },
 
 
-    
+
     [_L_MOD_CMD] = {
       {  0,255,255}, {160,255,255}, {160,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},
       {  0,255,255}, { 32,255,255}, { 32,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255},
