@@ -19,6 +19,12 @@
 #include "keymap_danish.h"
 #include "keymap_norwegian.h"
 #include "keymap_portuguese.h"
+#include <string.h>
+#include <printf.h>
+
+#include <LUFA/Drivers/USB/USB.h>
+#include "midi.h"
+#include "qmk_midi.h"
 
 #define KC_MAC_UNDO LGUI(KC_Z)
 #define KC_MAC_CUT LGUI(KC_X)
@@ -59,39 +65,37 @@ enum planck_keycodes {
   ST_GMAI,
   ST_HEX,
   ST_ROCK,
-  ENTBASE
+  ENTBASE,
+  CONSOLE,
 };
 
 enum planck_layers {
-  _BASE0,
-  _LOWER1,
-  _RAISE2,
-  _ADJUST3,
-  _HELPER4,
-  _TRACKER5,
-  _TRACKER6,
-  _MACRO7,
-  _MIDI8,
-  _MIDI9,
-  _SPC10,
+  _BASE,
+  _LOWER,
+  _RAISE,
+  _ADJUST,
+  _HELPER,
+  _TRACKER,
+  _TRACKER2,
+  _MACRO,
+  _MIDI,
+  _MIDI2,
+  _SPECIAL,
+  _CONSOLE,
+  _L_MOD_CMD, //light only
 };
 
-
-enum light_layers {
-  _L_MOD_CMD = 20,
-};
-
-#define BASE    TO(_BASE0)
-#define LOWER   MO(_LOWER1)
-#define RAISE   MO(_RAISE2)
-#define ADJUST  MO(_ADJUST3)
-#define HELPER  MO(_HELPER4)
-#define TRACKER TO(_TRACKER5)
-#define TRACKR2 MO(_TRACKER6)
-#define MACREC  MO(_MACRO7)
-#define MIDI    TO(_MIDI8)
-#define MIDI2   MO(_MIDI9)
-#define SPECIAL TO(_SPC10)
+#define BASE    TO(_BASE)
+#define LOWER   MO(_LOWER)
+#define RAISE   MO(_RAISE)
+#define ADJUST  MO(_ADJUST)
+#define HELPER  MO(_HELPER)
+#define TRACKER TO(_TRACKER)
+#define TRACKR2 MO(_TRACKER2)
+#define MACREC  MO(_MACRO)
+#define MIDI    TO(_MIDI)
+#define MIDI2   MO(_MIDI2)
+#define SPECIAL TO(_SPECIAL)
 
 #define RSH_RGT RSFT_T(KC_RGHT)
 
@@ -117,81 +121,88 @@ enum light_layers {
 int mod_is_down = 0;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE0] = LAYOUT_planck_grid(
+    [_BASE] = LAYOUT_planck_grid(
       KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,   KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
       KC_TAB,  KC_A,    KC_S,    KC_D,    KC_F,   KC_G,     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_DOWN, KC_RGHT, KC_ENT
+      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,   KC_B,     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
+      KC_LCTL, HELPER,  KC_LALT, KC_LGUI, LOWER,  KC_SPC,   KC_NO,   RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
     ),
 
-    [_LOWER1] = LAYOUT_planck_grid(
+    [_LOWER] = LAYOUT_planck_grid(
       KC_TILD, KC_1,    KC_2,    KC_3,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LPRN, KC_RPRN, KC_UNDS, KC_DEL, 
       KC_NO,   KC_4,    KC_5,    KC_6,    KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_PEQL, KC_PPLS, 
       RAISE,   KC_7,    KC_8,    KC_9,    KC_0,    KC_F11,   KC_NO,  KC_NO,   KC_LCBR, KC_RCBR, KC_ASTR, KC_PMNS, 
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   ADJUST,  KC_GRV,  ST_ROCK, KC_PIPE, KC_BSLS
     ),
 
-    [_RAISE2] = LAYOUT_planck_grid(
+    [_RAISE] = LAYOUT_planck_grid(
       KC_GRV,  KC_EXLM, KC_AT,   KC_HASH, KC_NO,   HEX_E,   HEX_F,   KC_7,    KC_8,    KC_9,    KC_PSLS, KC_DEL,
       KC_NO,   KC_DLR,  KC_PERC, KC_CIRC, KC_NO,   HEX_C,   HEX_D,   KC_4,    KC_5,    KC_6,    KC_PPLS, KC_NO, 
       KC_TRNS, KC_AMPR, KC_ASTR, ST_HEX,  KC_NO,   HEX_A,   HEX_B,   KC_1,    KC_2,    KC_3,    KC_PPLS, KC_PENT,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   KC_TRNS, KC_0,    KC_PDOT, KC_ASTR, KC_PENT
     ),
 
-    [_ADJUST3] = LAYOUT_planck_grid(
+    [_ADJUST] = LAYOUT_planck_grid(
       KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_TRNS,
       KC_NO,   KC_TRNS, AU_ON,   AU_OFF,  AU_TOG,  KC_TRNS, KC_TRNS, RGB_TOG, RGB_VAI, RGB_VAD, KC_TRNS, RESET,
       KC_TRNS, KC_TRNS, MU_ON,   MU_OFF,  MU_TOG,  KC_TRNS, KC_TRNS, RGB_MOD, RGB_HUI, RGB_HUD, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-    [_HELPER4] = LAYOUT_planck_grid(
-      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, KC_NO,   KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, SPECIAL,
+    [_HELPER] = LAYOUT_planck_grid(
+      ST_EMOJ, MIDI,    ORYXKEY, DMPLAY1, DMPLAY2, TRACKER, CONSOLE, KC_MPLY, KC_MUTE, KC_VOLD, KC_VOLU, SPECIAL,
       MACREC,  ST_ESPK, ST_ESHG, KC_NO,   DMRSTOP, ST_GO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   DMPLAY1, DMPLAY2,
       KC_TRNS, ST_SHOT, KC_NO,   KC_NO,   ST_TPST, KC_NO,   ST_MADI, ST_MV,   KC_NO,   KC_UP,   KC_NO,   KC_TRNS,
-      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
     ),
 
-    [_TRACKER5] = LAYOUT_planck_grid(
+    [_TRACKER] = LAYOUT_planck_grid(
       BASE,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       TRACKR2, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-    [_TRACKER6] = LAYOUT_planck_grid(
+    [_TRACKER2] = LAYOUT_planck_grid(
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_TRNS,
       KC_TRNS, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, TR_ROWU, TR_ROWD, KC_TRNS
     ),
 
-    [_MACRO7] = LAYOUT_planck_grid(
+    [_MACRO] = LAYOUT_planck_grid(
       KC_TRNS, KC_TRNS, KC_TRNS, DMREC1,  DMREC2,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, DMREC1,  DMREC2,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
     ),
 
-    [_MIDI8] = LAYOUT_planck_grid(
+    [_MIDI] = LAYOUT_planck_grid(
       BASE,    MI_G_3,  MI_A_3,  MI_B_3,  MI_C_4,  MI_D_4,  MI_E_4,  MI_F_4,  MI_G_4,  MI_A_4,  MI_B_4,  MI_OCTU,
       KC_TRNS, MI_G_2,  MI_A_2,  MI_B_2,  MI_C_3,  MI_D_3,  MI_E_3,  MI_F_3,  MI_G_3,  MI_A_3,  MI_B_3,  MI_OCTD,
       MIDI2,   MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  MI_E_2,  MI_F_2,  MI_G_2,  MI_A_2,  MI_B_2,  MIDI2,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_9,MI_SUS
     ),
 
-    [_MIDI9] = LAYOUT_planck_grid(
+    [_MIDI2] = LAYOUT_planck_grid(
       KC_TRNS, MI_G_3,  MI_A_3,  MI_As_3, MI_C_4,  MI_D_4,  MI_Ds_4, MI_F_4,  MI_G_4,  MI_A_4,  MI_As_4, MI_OCTU,
       KC_TRNS, MI_G_2,  MI_A_2,  MI_As_2, MI_C_3,  MI_D_3,  MI_Ds_3, MI_F_3,  MI_G_3,  MI_A_3,  MI_As_3, MI_OCTD,
       KC_TRNS, MI_G_1,  MI_A_1,  MI_As_1, MI_C_2,  MI_D_2,  MI_Ds_2, MI_F_2,  MI_G_2,  MI_A_2,  MI_As_2, KC_TRNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, MI_VEL_9,MI_SUS
     ),
 
-    [_SPC10]  = LAYOUT_planck_grid(
+    [_SPECIAL]  = LAYOUT_planck_grid(
       BASE,    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PMNS,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TILD,
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ENTBASE, 
       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ADJUST,  KC_TRNS, KC_NO,   SEL_ALL, KC_BSPC, KC_TILD, KC_QUES, KC_EXLM
+    ),
+
+    [_CONSOLE]  = LAYOUT_planck_grid(
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
     ),
 };
 /*
@@ -211,76 +222,82 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
-    [_LOWER1] = {
+    [_LOWER] = {
       { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {  0,  0,  0}, 
       {  0,  0,  0}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, 
       {  0,  0,  0}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {  0,  0,  0}, 
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {215,246,201}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}
     },
 
-    [_RAISE2] = {
+    [_RAISE] = {
       {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
       {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
       {  0,  0,  0}, {215,246,201}, {215,246,201}, {215,246,201}, {  0,  0,  0}, {125,250,252}, {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {215,246,201}, {  0,  0,  0}, 
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, { 80,255,255}, {125,250,252}, {125,250,252}, {  0,  0,  0}
     },
 
-    [_ADJUST3] = {
+    [_ADJUST] = {
       {125,250,252}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, { 80,255,255}, {125,250,252},
       {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},
       {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},
       {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252},                {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}, {125,250,252}
     },
 
-    [_HELPER4] = {
+    [_HELPER] = {
       { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, {128,255,255}, {160,255,255}, {160,255,255}, {160,255,255}, { 38,255,255},
       { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},
       { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, {192,255,255}, { 38,255,255}, { 38,255,255},
       { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255}, { 38,255,255},                { 38,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, { 38,255,255}
     },
 
-    [_TRACKER5] = {
+    [_TRACKER] = {
       { 27,126,255}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
       { 27,126,255}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
       {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},
       {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133},                {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}, {163,239,133}
     },
 
-    [_TRACKER6] = {
+    [_TRACKER2] = {
       {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75},
       {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {133,255, 75},
       {133,255, 75}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {250,159,255}, {133,255, 75},
       {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75}, {133,255, 75},                {133,255, 75}, {133,255, 75}, {250,159,255}, {250,159,255}, {133,255, 75}
     },
     
-    [_MACRO7] = {
+    [_MACRO] = {
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,255}, {  0,  0,255},
       {250,159,255}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
     },
 
-    [_MIDI8] = {
+    [_MIDI] = {
       { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
       { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
       { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, {128,255,255}, {128,255,255}, {128,255,255}, { 64,255,255},
       { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255},                { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}, { 64,255,255}
     },
 
-    [_MIDI9] = {
+    [_MIDI2] = {
       {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
       {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
       {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {  0,255,255}, {  0,255,255}, {  0,255,255}, {192,255,255},
       {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255},                {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}, {192,255,255}
     },
 
-    [_SPC10] = {
+    [_SPECIAL] = {
       {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, {  0,  0,  0},
       {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0}, { 80,255,255}, {  0,  0,  0},
       {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0},                {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}, {  0,  0,  0}
     },
 
+    [_CONSOLE] = {
+      {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255},
+      {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255},
+      {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255},
+      {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255},                {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}, {  0,  0,255}
+    },
 
 
     [_L_MOD_CMD] = {
@@ -354,35 +371,38 @@ void rgb_matrix_indicators_user(void) {
     return;
   }
   switch (biton32(layer_state)) {
-    case _LOWER1:
-      set_layer_color(_LOWER1);
+    case _LOWER:
+      set_layer_color(_LOWER);
       break;
-    case _RAISE2:
-      set_layer_color(_RAISE2);
+    case _RAISE:
+      set_layer_color(_RAISE);
       break;
-    case _ADJUST3:
-      set_layer_color(_ADJUST3);
+    case _ADJUST:
+      set_layer_color(_ADJUST);
       break;
-    case _HELPER4:
-      set_layer_color(_HELPER4);
+    case _HELPER:
+      set_layer_color(_HELPER);
       break;
-    case _TRACKER5:
-      set_layer_color(_TRACKER5);
+    case _TRACKER:
+      set_layer_color(_TRACKER);
       break;
-    case _TRACKER6:
-      set_layer_color(_TRACKER6);
+    case _TRACKER2:
+      set_layer_color(_TRACKER2);
       break;
-    case _MACRO7:
-      set_layer_color(_MACRO7);
+    case _MACRO:
+      set_layer_color(_MACRO);
       break;
-    case _MIDI8:
-      set_layer_color(_MIDI8);
+    case _MIDI:
+      set_layer_color(_MIDI);
       break;
-    case _MIDI9:
-      set_layer_color(_MIDI9);
+    case _MIDI2:
+      set_layer_color(_MIDI2);
       break;
-    case _SPC10:
-      set_layer_color(_SPC10);
+    case _SPECIAL:
+      set_layer_color(_SPECIAL);
+      break;
+    case _CONSOLE:
+      set_layer_color(_CONSOLE);
       break;
    default:
     if (rgb_matrix_get_flags() == LED_FLAG_NONE
@@ -391,6 +411,116 @@ void rgb_matrix_indicators_user(void) {
     break;
   }
 }
+
+bool console_enabled = false;
+
+#define CONSOLE_MAX 256
+
+char console_buffer[256];
+char console_last[256] = "";
+size_t console_last_index = 0;
+size_t console_index = 0;
+enum console_states {
+  CINPUT,
+};
+
+void console_prompt(void) {
+  send_string("> ");
+}
+void enter_console(void) {
+  console_enabled = true;
+  layer_move(_CONSOLE);
+  send_string("--------\n\nconsole VISION v0.01\n\nwelcome!\n\n");
+  console_prompt();
+}
+
+void console_command(char buf[]) {
+  send_string("\n");
+  if (strcmp(buf, "exit") == 0) {
+    send_string("goodbye!\n\n--------\n\n");
+    console_enabled = false;
+    layer_move(_BASE);
+    return;
+  } else if (strcmp(buf, "help") == 0) {
+    send_string("i can't help you now... sorry!\n\n");
+  } else if (strcmp(buf, "send_midi 60") == 0) {
+    midi_send_noteon(&midi_device, 0, 60, 127); 
+  } else {
+    char msg[128];
+    sprintf(msg, "unknown command: %s\n\n", buf);
+    send_string(msg);
+  }
+  console_prompt();
+}
+
+void console_bspace(int count) {
+  for (int i = 0; i < count; ++i) {
+    SEND_STRING(SS_TAP(X_BSPACE));
+  }
+}
+
+bool process_mv_console(uint16_t keycode, keyrecord_t *record) {
+  char inp = 0;
+  if (record->event.pressed) {
+    if (keycode >= KC_A && keycode <= KC_Z) {
+      inp = keycode - KC_A + 'a';
+    } else if (keycode >= KC_1 && keycode <= KC_9) {
+      inp = keycode - KC_1 + '1';
+    } else {
+      switch (keycode) {
+        case KC_0:
+        inp = '0';
+        break;
+        case KC_ENTER:
+        console_buffer[console_index] = 0;
+        strcpy(console_last, console_buffer);
+        console_last_index = console_index;
+        console_index = 0;
+        console_command(console_buffer);
+        return false;
+        break;
+        case KC_BSPACE:
+        if (console_index <= 0) {
+          console_index = 0;
+          return false;
+        }
+        console_index--;
+        break;
+        case KC_SPACE:
+        inp = ' ';
+        break;
+        case KC_UNDERSCORE:
+        inp = '_';
+        break;
+        case KC_UP:
+        strcpy(console_buffer, console_last);
+        console_bspace(console_index);
+        send_string(console_buffer);
+        console_index = console_last_index;
+        return false;
+        break;
+        // disabled keys
+        case KC_ESCAPE:
+        case KC_TAB:
+        case KC_LEFT:
+        case KC_DOWN:
+        case KC_RIGHT:
+        break;
+        return false;
+      }
+    }
+    if (inp) { // leave space for string termination
+      if (console_index >= CONSOLE_MAX - 2) {
+        return false; //prevent key send
+      } else {
+        console_buffer[console_index++] = inp;
+      }
+    }
+  }
+  return true;
+}
+
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
@@ -427,6 +557,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       mod_is_down |= MOD_DOWN_CTRL;
     } else {
       mod_is_down &= ~MOD_DOWN_CTRL;
+    }
+    break;
+  }
+
+  if (console_enabled) {
+    return process_mv_console(keycode, record);
+  }
+
+  switch (keycode) {
+    case CONSOLE:
+    if (record->event.pressed) {
+      enter_console();
+      return false;
     }
     break;
     case ST_EMOJ:
@@ -487,7 +630,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case ENTBASE:
     if (record->event.pressed) {
       SEND_STRING(SS_TAP(X_ENTER));
-      layer_move(_BASE0);
+      layer_move(_BASE);
     }
     break;
     case RGB_SLD:
@@ -508,7 +651,7 @@ uint16_t muse_tempo = 50;
 
 void encoder_update(bool clockwise) {
     if (muse_mode) {
-        if (IS_LAYER_ON(_RAISE2)) {
+        if (IS_LAYER_ON(_RAISE)) {
             if (clockwise) {
                 muse_offset++;
             } else {
@@ -570,5 +713,5 @@ bool music_mask_user(uint16_t keycode) {
 #endif
 
 // uint32_t layer_state_set_user(uint32_t state) {
-//     return update_tri_layer_state(state, _LOWER1, _RAISE2, _ADJUST3);
+//     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 // }
